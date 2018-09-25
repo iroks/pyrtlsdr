@@ -23,6 +23,7 @@ from .librtlsdr import (
     rtlsdr_read_async_cb_t,
     tuner_bandwidth_supported,
     tuner_set_bandwidth_supported,
+
 )
 try:                from itertools import izip
 except ImportError: izip = zip
@@ -129,6 +130,10 @@ class BaseRtlSdr(object):
         num_devices = librtlsdr.rtlsdr_get_device_count()
         return [get_serial(i) for i in range(num_devices)]
 
+    @staticmethod
+    def get_device_count():
+        return librtlsdr.rtlsdr_get_device_count()
+
     def __init__(self, device_index=0, test_mode_enabled=False, serial_number=None):
         self.open(device_index, test_mode_enabled, serial_number)
 
@@ -214,6 +219,7 @@ class BaseRtlSdr(object):
     def set_center_freq(self, freq):
 
         freq = int(freq)
+        print ("setting center frequency")
 
         result = librtlsdr.rtlsdr_set_center_freq(self.dev_p, freq)
         if result < 0:
@@ -394,6 +400,54 @@ class BaseRtlSdr(object):
                           % (result))
 
         return result
+
+    def set_bias_tee(self, enabled):
+        """
+        activate base_tee (GPIO0)
+        :param mode: mode 1 - on; 0 - off
+        :return:
+        """
+        result = librtlsdr.rtlsdr_set_bias_tee(self.dev_p, int(enabled))
+        if result < 0:
+            raise IOError('Error code %d when setting bias_tee' \
+                  % (result))
+        return result
+
+    def set_i2c_repeater(self, enabled):
+        """
+        activate i2c repeater
+        :param mode: mode 1 - on; 0 - off
+        :return:
+        """
+        librtlsdr.rtlsdr_set_i2c_repeater(self.dev_p, int(enabled))
+        
+        return
+
+    def write_i2c_reg(self, i2c_addr, reg, val):
+        """
+        write i2c register
+        :param mode:
+        :return:
+        """
+        result = librtlsdr.rtlsdr_i2c_write_reg(self.dev_p, i2c_addr, reg, val)
+        if result < 0:
+            raise I2CException ('Error code %d when writing i2c register' \
+                          % (result))
+        return result
+
+    def set_dithering (self, enabled):
+        """
+        activate/deactivate SDM
+        :param mode: mode 1 - on; 0 - off
+        :return:
+        """
+        result=librtlsdr.rtlsdr_set_dithering (self.dev_p, int(enabled))
+
+        if result < 0:
+            raise IOError('Error code %d when setting bias_tee' \
+                  % (result))
+        return result
+
 
     def set_direct_sampling(self, direct):
         """Enable direct sampling.
@@ -694,3 +748,6 @@ class RtlSdr(BaseRtlSdr):
                           % (result))
 
         self.read_async_canceling = True
+
+class I2CException (Exception):
+    pass

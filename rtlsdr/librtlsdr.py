@@ -140,6 +140,23 @@ f.restype, f.argtypes = c_int, [p_rtlsdr_dev, c_uint]
 f = librtlsdr.rtlsdr_get_sample_rate
 f.restype, f.argtypes = c_uint, [p_rtlsdr_dev]
 
+#int rtlsdr_set_bias_tee(rtlsdr_dev_t *dev, int on)
+f= librtlsdr.rtlsdr_set_bias_tee
+f.restype, f.argtypes = c_uint, [p_rtlsdr_dev, c_int]
+
+#void rtlsdr_set_i2c_repeater(rtlsdr_dev_t *dev, int on)
+f= librtlsdr.rtlsdr_set_i2c_repeater
+f.restype, f.argtypes = None, [p_rtlsdr_dev, c_int]
+
+#int rtlsdr_i2c_write_reg(rtlsdr_dev_t *dev, uint8_t i2c_addr, uint8_t reg, uint8_t val)
+f= librtlsdr.rtlsdr_i2c_write_reg
+f.restype, f.argtypes = c_int, [p_rtlsdr_dev, c_uint8, c_uint8, c_uint8]
+
+#int rtlsdr_set_dithering(rtlsdr_dev_t *dev, int dither);
+f= librtlsdr.rtlsdr_set_dithering
+f.restype, f.argtypes = c_int, [p_rtlsdr_dev, c_int]
+
+
 # int rtlsdr_set_and_get_tuner_bandwidth(rtlsdr_dev_t *dev, uint32_t bw, uint32_t *applied_bw, int apply_bw );
 try:
     f = librtlsdr.rtlsdr_set_and_get_tuner_bandwidth
