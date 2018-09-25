@@ -219,8 +219,6 @@ class BaseRtlSdr(object):
     def set_center_freq(self, freq):
 
         freq = int(freq)
-        print ("setting center frequency")
-
         result = librtlsdr.rtlsdr_set_center_freq(self.dev_p, freq)
         if result < 0:
             self.close()
@@ -404,7 +402,7 @@ class BaseRtlSdr(object):
     def set_bias_tee(self, enabled):
         """
         activate base_tee (GPIO0)
-        :param mode: mode 1 - on; 0 - off
+        :param mode: mode 2 - on; 0 - off
         :return:
         """
         result = librtlsdr.rtlsdr_set_bias_tee(self.dev_p, int(enabled))
